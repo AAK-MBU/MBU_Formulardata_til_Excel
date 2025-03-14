@@ -127,8 +127,8 @@ def send_excel_file(os2_webform_id: str, orchestrator_connection: OrchestratorCo
         sender=email_sender,
         subject=email_subject,
         body=email_body,
-        smtp_server=orchestrator_connection.get_constant("smtp_server"),
-        smtp_port=orchestrator_connection.get_constant("smtp_port"),
+        smtp_server=orchestrator_connection.get_constant("smtp_server").value,
+        smtp_port=int(orchestrator_connection.get_constant("smtp_port").value),
         html_body=True,
         attachments=attachments if attachments else None
     )
