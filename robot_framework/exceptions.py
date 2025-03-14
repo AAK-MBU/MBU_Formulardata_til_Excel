@@ -8,6 +8,7 @@ from OpenOrchestrator.orchestrator_connection.connection import OrchestratorConn
 
 from robot_framework import config
 from robot_framework import error_screenshot
+from robot_framework import service_now_handler
 
 
 class BusinessError(Exception):
@@ -39,6 +40,23 @@ def handle_error(message: str, error_count: str | None, error: Exception, queue_
     if queue_element:
         orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED, error_msg)
     error_screenshot.send_error_screenshot(error_email, error, orchestrator_connection.process_name)
+
+    if message == "ApplicationException":
+        try:
+            orchestrator_connection.log_trace("ApplicationException caught. Trying to create ServiceNow incident.")
+
+            service_now_api_username = orchestrator_connection.get_credential(config.SERVICE_NOW_API_PROD_USER).username
+            service_now_api_password = orchestrator_connection.get_credential(config.SERVICE_NOW_API_PROD_USER).password
+
+            service_now_handler.post_incident(orchestrator_connection, service_now_api_username, service_now_api_password, error_dict)
+
+            orchestrator_connection.log_trace("ServiceNow incident created.")
+
+        # pylint: disable-next = broad-exception-caught
+        except Exception as e:
+            print(f"Failed to create ServiceNow incident: {e}")
+
+            orchestrator_connection.log_error(f"Failed to create ServiceNow incident. error_msg: {error_msg}")
 
 
 def log_exception(orchestrator_connection: OrchestratorConnection) -> callable:

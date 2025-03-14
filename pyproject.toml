@@ -17,7 +17,15 @@ classifiers = [
 ]
 dependencies = [
     "OpenOrchestrator == 1.*",
-    "Pillow >= 10.*",
+    "Pillow == 10.*",
+    "openpyxl >= 3.1.2",
+    "pyodbc >= 5.1.0",
+    "requests_ntlm >= 1.2.0",
+    "python-dateutil == 2.9.*",
+    "cryptography >= 43.0.0",
+    "office365-rest-python-client",
+    "uiautomation",
+    "requests_ntlm >= 1.2.0"
 ]
 
 [project.optional-dependencies]

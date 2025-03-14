@@ -14,6 +14,8 @@ SCREENSHOT_SENDER = "robot@friend.dk"
 # Constant/Credential names
 ERROR_EMAIL = "Error Email"
 
+SERVICE_NOW_API_DEV_USER = "service_now_dev_user"
+SERVICE_NOW_API_PROD_USER = "service_now_prod_user"
 
 # Queue specific configs
 # ----------------------
