@@ -1,12 +1,6 @@
 """Test the ServiceNow API."""
 
-import sys
-import os
-import json
-
 import requests
-
-from OpenOrchestrator.orchestrator_connection.connection import OrchestratorConnection
 
 from robot_framework import config
 
@@ -78,14 +72,12 @@ def update_incident(orchestrator_connection, error_dict, existing_incident_sys_i
     Method to update an existing incident - the method adds a new comment to the existing incident
     """
 
-    error_type = error_dict.get("type", "")  # Would typically be "ApplicationException"
     error_message = error_dict.get("message", "")  # The actual Exception message in str format
     error_trace = error_dict.get("trace", "")  # The traceback.format_exc() in str format
 
     process_name = orchestrator_connection.process_name
 
-    comment_text = f"The process '{process_name}' has encountered an Exception!\n\n"
-    comment_text += f"Exception type: {error_type}\n\n"
+    comment_text = f"The process '{process_name}' has encountered another ApplicationException!\n\n"
     comment_text += f"Exception message:\n{error_message}\n\n"
     comment_text += f"Full Exception trace:\n{error_trace}\n\n"
     comment_text += "Please investigate the source of this error, as this comment is attached to an existing incident with the same process name."
@@ -95,7 +87,6 @@ def update_incident(orchestrator_connection, error_dict, existing_incident_sys_i
 
     # put_url = f"https://{PROD_INSTANCE}.service-now.com/api/now/table/incident/{existing_incident_sys_id}"
     put_url = f"https://{TEST_INSTANCE}.service-now.com/api/now/table/incident/{existing_incident_sys_id}"
-    put_url = f"https://{TEST_INSTANCE}.service-now.com/api/now/table/incident/3bd5ce5d1b1ce6d068ba5398624bcbbe"
 
     incident_data = {
         "comments": f'{comment_text}'
@@ -127,7 +118,6 @@ def post_incident(orchestrator_connection, error_dict):
 
     print("inside post_incident() function ...")
 
-    error_type = error_dict.get("type", "")  # Would typically be "ApplicationException"
     error_message = error_dict.get("message", "")  # The actual Exception message in str format
     error_trace = error_dict.get("trace", "")  # The traceback.format_exc() in str format
 
@@ -136,7 +126,7 @@ def post_incident(orchestrator_connection, error_dict):
 
     incident_data = {
         "contact_type": "integration",  # Should always be 'integration' - this just means the incident was created using the ServiceNow API
-        "short_description": f"Robot error! Process name: {orchestrator_connection.process_name}, error type: {error_type}",
+        "short_description": f"ApplicationException caught in process '{orchestrator_connection.process_name}'",
         "description": f"Error message:\n{error_message}\n\nFull error trace message:\n{error_trace}",
         "business_service": "",  # What should this be?
         "service_offering": "",  # What should this be?
@@ -171,38 +161,38 @@ def post_incident(orchestrator_connection, error_dict):
         return None
 
 
-if __name__ == "__main__":
-    print("inside test snippet")
+# if __name__ == "__main__":
+#     print("inside test snippet")
 
-    # !!! DELETE THIS !!!
-    sys.argv = [
-        "servie_now_handler.py",
-        "service_now_test",
-        os.getenv("ORCHESTRATOR_CONNECTION_STRING"),
-        os.getenv("ORCHESTRATOR_ENCRYPTION_KEY"),
-        json.dumps({
-            "os2_webform_id": "_fritvalgsordning",
-            "weeks_back": 1,
-            "email_recipient": os.getenv("DADJ_EMAIL"),
-            "email_body": "<p>This is a test body.</p>"
-        })
-    ]
-    # !!! DELETE THIS !!!
+#     # !!! DELETE THIS !!!
+#     sys.argv = [
+#         "servie_now_handler.py",
+#         "service_now_test",
+#         os.getenv("ORCHESTRATOR_CONNECTION_STRING"),
+#         os.getenv("ORCHESTRATOR_ENCRYPTION_KEY"),
+#         json.dumps({
+#             "os2_webform_id": "_fritvalgsordning",
+#             "weeks_back": 1,
+#             "email_recipient": os.getenv("DADJ_EMAIL"),
+#             "email_body": "<p>This is a test body.</p>"
+#         })
+#     ]
+#     # !!! DELETE THIS !!!
 
-    test_orchestrator_connection = OrchestratorConnection.create_connection_from_args()
+#     test_orchestrator_connection = OrchestratorConnection.create_connection_from_args()
 
-    test_error_dict = {
-        "type": "ApplicationException",
-        "error_count": 3,
-        "message": "FileNotFoundError: [Errno 2] No such file or directory: 'not_a_real_file.txt'",
-        "trace": (
-            'Traceback (most recent call last):\n'
-            '  File "main.py", line 2, in <module>\n'
-            '    open("not_a_real_file.txt")\n'
-            "FileNotFoundError: [Errno 2] No such file or directory: 'not_a_real_file.txt'\n"
-        )
-    }
+#     test_error_dict = {
+#         "type": "ApplicationException",
+#         "error_count": 3,
+#         "message": "FileNotFoundError: [Errno 2] No such file or directory: 'not_a_real_file.txt'",
+#         "trace": (
+#             'Traceback (most recent call last):\n'
+#             '  File "main.py", line 2, in <module>\n'
+#             '    open("not_a_real_file.txt")\n'
+#             "FileNotFoundError: [Errno 2] No such file or directory: 'not_a_real_file.txt'\n"
+#         )
+#     }
 
-    # incident = get_incident(test_orchestrator_connection)
+#     # incident = get_incident(test_orchestrator_connection)
 
-    handle_incident(test_orchestrator_connection, test_error_dict)
+#     handle_incident(test_orchestrator_connection, test_error_dict)
