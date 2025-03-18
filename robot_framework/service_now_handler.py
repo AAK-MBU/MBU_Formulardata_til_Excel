@@ -114,7 +114,9 @@ def update_incident(orchestrator_connection, error_dict, existing_incident_sys_i
 
 
 def post_incident(orchestrator_connection, error_dict):
-    """POST a CSM case by sys_id or case number."""
+    """
+    Create a new incident for the caught ApplicationException in ServiceNow
+    """
 
     print("inside post_incident() function ...")
 
