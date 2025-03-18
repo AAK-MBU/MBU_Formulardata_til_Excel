@@ -20,6 +20,8 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
     """Do the primary process of the robot."""
     orchestrator_connection.log_trace("Running process.")
 
+    raise Exception("Test exception for ServiceNow incident creation")
+
     sql_server_connection_string = orchestrator_connection.get_constant("DbConnectionString").value
 
     proc_args = json.loads(orchestrator_connection.process_arguments)
