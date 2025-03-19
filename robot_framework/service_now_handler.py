@@ -56,7 +56,7 @@ def get_incident(orchestrator_connection):
         if results:
             print(results[0].get("sys_id"))
 
-            return results[0]  # Only return first match
+            return results[0].get("sys_id")  # Only return first match
 
         else:
             return None
