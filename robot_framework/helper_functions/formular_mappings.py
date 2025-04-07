@@ -6,6 +6,8 @@ Ideally we wouldn't have to hardcode the mappings, but we the column names from 
 
 import ast
 
+from datetime import datetime
+
 sundung_aarhus_mapping = {
     "serial": "Serial number",
     "created": "Oprettet",
@@ -42,6 +44,34 @@ henvisningsskema_til_klinisk_hyp_mapping = {
     "hvad_er_oensket_maal_for_forventning_til_effekt_af_hypnoterapi_": "Hvad er det ønskede konkrete mål for hypnoterapi"
 }
 
+spoergeskema_hypnoterapi_foer_fo_mapping = {
+    "serial": "Serial number",
+    "created": "Oprettet",
+    "completed": "Gennemført",
+    "navn": "Navn",
+    "cpr_nummer": "CPR-nummer",
+    "paa_vegne_af_mit_barn": "På vegne af mit barn",
+    "barnets_navn": "Barnets navn",
+    "cpr_nummer_barn": "Barnets CPR-nummer",
+    "mit_barn_kommer_ikke_frem_i_listen": "Mit barn kommer ikke frem i listen",
+    "barnets_navn_manuelt": "Barnets navn manuelt",
+    "cpr_nummr_barnet_manuelt": "Barnets CPR-nummer manuelt",
+    "er_voksen": "Er voksen",
+    "fortael_mig_lidt_om_dit_liv": "Fortæl mig lidt om dit liv (din familie, din skole, fritidsinteresser, venner eller hvad du nu har lyst til)",
+    "hvad_goer_dig_allermest_glad_": "Hvad gør dig mest glad?",
+    "hvornaar_og_hvor_slapper_du_allerbedst_af_": "Hvornår og hvor slapper du allerbedst af?",
+    "hvad_synes_du_selv_er_dine_staerke_gode_side_": "Hvad synes du selv er dine stærke/gode side?",
+    "hvad_synes_andre_er_dine_staerke_gode_sider_": "Hvad synes andre er dine stærke/gode sider?",
+    "fortael_om_det_problem_du_gerne_vil_have_hjaelp_til": "Fortæl om det problem, du gerne vil have hjælp til",
+    "hvordan_paavirker_problemet_dit_liv": "Hvordan påvirker problemet dit liv",
+    "hvad_har_du_taenkt_": "Har du tænkt over, hvorfor problemet er kommet? Hvornår begyndte det, hvad skete der i dit liv?",
+    "hvilken_virkning_havde_behandlingen_": "Har du fået behandling fra andre? Hvis ja, af hvem og hvilken behandling? Og hvilken virkning havde det?",
+    "hvad_kan_goere_problemet_vaerre_": "Hvad kan gøre problemet værre?",
+    "hvad_kan_goere_problemet_bedre_": "Hvad kan gøre problemet bedre?",
+    "beskriv_gerne_hvilke_problemer": "Er der andet, der fylder for dig?",
+    'her_er_en_linke_med_prikker_fra_0_til_10_prik_0_betyder_det_vaer': 'Her er en linje med prikker fra 0 til 10. Prik 0 betyder "det værst mulige liv" for dig, og prik 10 betyder "det bedst mulige liv" for dig. Hvor på linjen synes du selv, du er for tiden?'
+}
+
 
 def transform_form_submission(form_serial_number, form: dict, mapping: dict) -> dict:
     """
@@ -52,7 +82,7 @@ def transform_form_submission(form_serial_number, form: dict, mapping: dict) -> 
       - If the value is a string that looks like a list (e.g. "['Mail', 'SMS']"),
         converts it to a comma-separated string.
 
-    Also adds additional fields from the form's "entity" section.
+    Also adds additional fields from the form's "entity" section, formatting date/time fields.
 
     Args:
         form_serial_number: The serial number from the form's entity.
@@ -92,13 +122,23 @@ def transform_form_submission(form_serial_number, form: dict, mapping: dict) -> 
 
         transformed[target_column] = value
 
-    # Retrieve additional fields from the "entity" portion
+    # Retrieve additional fields from the "entity" portion and format the dates
     try:
-        created = form["entity"]["created"][0]["value"]
+        created_str = form["entity"]["created"][0]["value"]
 
-        completed = form["entity"]["completed"][0]["value"]
+        completed_str = form["entity"]["completed"][0]["value"]
 
-    except (KeyError, IndexError):
+        # Convert ISO date strings to datetime objects and reformat them
+        created_dt = datetime.fromisoformat(created_str)
+
+        completed_dt = datetime.fromisoformat(completed_str)
+
+        # Format as "YYYY-MM-DD HH:MM:SS"
+        created = created_dt.strftime("%Y-%m-%d %H:%M:%S")
+
+        completed = completed_dt.strftime("%Y-%m-%d %H:%M:%S")
+
+    except (KeyError, IndexError, ValueError):
         created = None
 
         completed = None

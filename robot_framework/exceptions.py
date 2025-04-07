@@ -8,7 +8,8 @@ from OpenOrchestrator.orchestrator_connection.connection import OrchestratorConn
 
 from robot_framework import config
 from robot_framework import error_screenshot
-# from robot_framework import service_now_handler
+
+from robot_framework import service_now_handler
 
 
 class BusinessError(Exception):
@@ -39,21 +40,21 @@ def handle_error(message: str, error_count: str | None, error: Exception, queue_
     orchestrator_connection.log_error(error_msg)
     if queue_element:
         orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED, error_msg)
-    # error_screenshot.send_error_screenshot(error_email, error, orchestrator_connection.process_name)
+    error_screenshot.send_error_screenshot(error_email, error, orchestrator_connection.process_name)
 
-    # if message == "ApplicationException" and error_count == config.MAX_RETRY_COUNT:
-    #     try:
-    #         orchestrator_connection.log_trace("ApplicationException caught. Handling ServiceNow incident.")
+    if message == "ApplicationException" and error_count == config.MAX_RETRY_COUNT:
+        try:
+            orchestrator_connection.log_trace("ApplicationException caught. Handling ServiceNow incident.")
 
-    #         service_now_handler.handle_incident(orchestrator_connection, error_dict)
+            service_now_handler.handle_incident(orchestrator_connection, error_dict)
 
-    #         orchestrator_connection.log_trace("ServiceNow incident handled.")
+            orchestrator_connection.log_trace("ServiceNow incident handled.")
 
-    #     # pylint: disable-next = broad-exception-caught
-    #     except Exception as e:
-    #         print(f"Failed to create ServiceNow incident: {e}")
+        # pylint: disable-next = broad-exception-caught
+        except Exception as e:
+            print(f"Failed to create ServiceNow incident: {e}")
 
-    #         orchestrator_connection.log_error(f"Failed to create ServiceNow incident. error_msg: {error_msg}")
+            orchestrator_connection.log_error(f"Failed to create ServiceNow incident. error_msg: {error_msg}")
 
 
 def log_exception(orchestrator_connection: OrchestratorConnection) -> callable:
