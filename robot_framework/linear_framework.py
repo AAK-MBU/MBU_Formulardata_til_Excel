@@ -20,17 +20,17 @@ from robot_framework import config
 def main():
     """The entry point for the framework. Should be called as the first thing when running the robot."""
 
-    # # !!! DELETE THIS !!!
+    # !!! DELETE THIS !!!
     # sys.argv = [
     #     "linear_framework.py",
-    #     "dadj Test robot for Excel formulars",
+    #     "OS2 Formulardata til Sharepoint - SundUng Aarhus",
     #     os.getenv("ORCHESTRATOR_CONNECTION_STRING"),
     #     os.getenv("ORCHESTRATOR_ENCRYPTION_KEY"),
     #     json.dumps({
     #         "os2_webform_id": "sundung_aarhus",
     #     })
     # ]
-    # # !!! DELETE THIS !!!
+    # !!! DELETE THIS !!!
 
     orchestrator_connection = OrchestratorConnection.create_connection_from_args()
     sys.excepthook = log_exception(orchestrator_connection)

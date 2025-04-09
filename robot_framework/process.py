@@ -1,10 +1,10 @@
 """This module contains the main process of the robot."""
 
-import os
+import sys
 import json
 import urllib.parse
 
-# from datetime import datetime
+import os
 
 from io import BytesIO
 
@@ -26,18 +26,10 @@ from mbu_dev_shared_components.msoffice365.sharepoint_api.files import Sharepoin
 
 from robot_framework.helper_functions import formular_mappings
 
-USERNAME = os.getenv("DADJ_EMAIL")
-PASSWORD = os.getenv("DADJ_EMAIL_PASSWORD")
 SHAREPOINT_FOLDER_URL = "https://aarhuskommune.sharepoint.com"
-SHAREPOINT_SITE_NAME = "tea-teamsite10693"
 SHAREPOINT_DOCUMENT_LIBRARY = "Delte dokumenter"
 
-SHAREPOINT = Sharepoint(username=USERNAME, password=PASSWORD, site_url=SHAREPOINT_FOLDER_URL, site_name=SHAREPOINT_SITE_NAME, document_library=SHAREPOINT_DOCUMENT_LIBRARY)
 
-
-# pylint: disable-next=unused-argument
-# pylint: disable-next=too-many-branches
-# pylint: disable-next=too-many-statements
 def process(orchestrator_connection: OrchestratorConnection) -> None:
     """Do the primary process of the robot."""
 
@@ -47,6 +39,8 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
     folder_name = ""
     formular_mapping = None
 
+    site_name = "tea-teamsite10693"
+
     new_forms = []
 
     sql_server_connection_string = orchestrator_connection.get_constant("DbConnectionString").value
@@ -54,6 +48,9 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
     proc_args = json.loads(orchestrator_connection.process_arguments)
 
     os2_webform_id = proc_args["os2_webform_id"]
+
+    username = orchestrator_connection.get_credential("SvcRpaMBU002").username
+    password = orchestrator_connection.get_credential("SvcRpaMBU002").password
 
     if os2_webform_id == "sundung_aarhus":
         excel_file_name = "Dataudtræk SundUng Aarhus.xlsx"
@@ -76,21 +73,26 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
 
         formular_mapping = formular_mappings.spoergeskema_hypnoterapi_foer_fo_mapping
 
-    # STEP 1 - Get all active forms from the SQL server
-    orchestrator_connection.log_trace("STEP 1 - Fetching all active forms.")
-    all_active_forms = get_forms_data(sql_server_connection_string, os2_webform_id)
+    sharepoint_api = Sharepoint(username=username, password=password, site_url=SHAREPOINT_FOLDER_URL, site_name=site_name, document_library=SHAREPOINT_DOCUMENT_LIBRARY)
 
-    # STEP 2 - Get the Excel file from Sharepoint, if-logic to determine which file to fetch is needed
-    orchestrator_connection.log_trace("STEP 2 - Retrieving existing Excel sheet.")
-    excel_file = SHAREPOINT.fetch_file_using_open_binary(excel_file_name, folder_name)
+    # STEP 1 - Get the Excel file from Sharepoint
+    orchestrator_connection.log_trace("STEP 1 - Retrieving existing Excel sheet.")
+    excel_file = sharepoint_api.fetch_file_using_open_binary(excel_file_name, folder_name)
     excel_stream = BytesIO(excel_file)
     excel_file_df = pd.read_excel(excel_stream)
+
+    orchestrator_connection.log_trace(f"Excel file retrieved. {len(excel_file_df)} rows found in existing sheet.")
 
     # Create a set of serial numbers from the Excel file
     serial_set = set(excel_file_df["Serial number"].tolist())
 
+    # STEP 2 - Get all active forms from the SQL server
+    orchestrator_connection.log_trace("STEP 2 - Fetching all active forms.")
+    all_active_forms = get_forms_data(sql_server_connection_string, os2_webform_id)
+    orchestrator_connection.log_trace(f"OS2 forms retrieved. {len(all_active_forms)} active forms found.")
+
     # STEP 3 - Loop through all active forms and transform them to the correct format
-    orchestrator_connection.log_trace("STEP 3 - Looping forms and mapping retrieved data to fit Excel columns.")
+    orchestrator_connection.log_trace("STEP 3 - Looping forms and mapping retrieved data to fit Excel column names.")
     for form in all_active_forms:
         form_serial_number = form["entity"]["serial"][0]["value"]
 
@@ -101,22 +103,10 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
 
         new_forms.append(transformed_row)
 
-        print("form")
-        print(form["data"])
-
-        print()
-        print()
-
-        print("Transformed row:")
-        print(transformed_row)
-
-        print()
-        print()
-        print()
-        print()
-
     # STEP 4 & 5 - If new forms are found, append them to the Excel file, format the file and upload it to Sharepoint
     if new_forms:
+        orchestrator_connection.log_trace(f"New forms found. {len(new_forms)} new forms to be added.")
+
         new_forms_df = pd.DataFrame(new_forms)
 
         # Append the new forms to the existing DataFrame
@@ -136,7 +126,7 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
 
         # Upload the formatted Excel file to SharePoint
         orchestrator_connection.log_trace("STEP 5 - Uploading formatted Excel file to Sharepoint.")
-        SHAREPOINT.upload_file_from_bytes(
+        sharepoint_api.upload_file_from_bytes(
             binary_content=formatted_stream.getvalue(),
             file_name=excel_file_name,
             folder_name=folder_name
