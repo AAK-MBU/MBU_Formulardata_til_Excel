@@ -1,10 +1,7 @@
 """This module contains the main process of the robot."""
 
-import sys
 import json
 import urllib.parse
-
-import os
 
 from io import BytesIO
 

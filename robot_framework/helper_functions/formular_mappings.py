@@ -37,10 +37,15 @@ henvisningsskema_til_klinisk_hyp_mapping = {
     "hvad_er_barnets_primaere_udfordring_": "Hvad er barnets primære udfordring?",
     "hvor_laenge_har_udfordringen_varet_": "Hvor længe har udfordringen varet?",
     "hvilken_indflydelse_har_det_paa_barnets_trivsel_i_skoletid_": "Hvilken indflydelse har udfordringen på barnets trivsel i skoletid?",
-    "hvilke_tiltag_er_ellers_ivaerksat_tidligere_afproevet_": "Hvilke tiltag er ellers iværksat/tidligere afprøvet?",
-    "skolefravaer_den_seneste_maaned": "Skolefravær den seneste måned",
+    "hvilke_tiltag_er_ellers_ivaerksat_tidligere_afproevet_": "Hvilke tiltag er ellers iværksat/tidligere afprøvet i skoletiden?",
     "er_barnet_aktuelt_eller_tidligere_tilknyttet_en_af": "Er barnet, aktuelt eller tidligere, tilknyttet en af nedenstående?",
-    "uddyb_gerne": "Uddyb gerne",
+    "uddyb_her_ppr": "Uddyb her - PPR",
+    "uddyb_her_egen_laege": "Uddyb her - Egen læge",
+    "uddyb_her_privatpraktiserende_psykolog": "Uddyb her - Privatpraktiserende psykolog",
+    "uddyb_her_boerne_og_ungdompsykiatrien": "Uddyb her - Børne- og ungdompsykiatrien",
+    "uddyb_her_sygehus": "Uddyb her - Sygehus",
+    "uddyb_her_andet": "Uddyb her - Andet",
+    "skolefravaer_den_seneste_maaned": "Skolefravær den seneste måned",
     "hvad_er_oensket_maal_for_forventning_til_effekt_af_hypnoterapi_": "Hvad er det ønskede konkrete mål for hypnoterapi"
 }
 

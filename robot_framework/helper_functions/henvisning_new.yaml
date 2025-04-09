@@ -1,0 +1,191 @@
+markup_01:
+  '#type': markup
+  '#markup': '<p>Det er vigtigt, at henvisningen skrives af den/de fagpersoner, som kender barnet bedst. Forældre kan ikke selv henvise.</p>'
+horizontal_rule:
+  '#type': horizontal_rule
+barnets_oplysninger:
+  '#type': section
+  '#title': 'Barnets oplysninger'
+  barnets_navn:
+    '#type': textfield
+    '#title': 'Barnets navn'
+    '#required': true
+  cpr_barnets_nummer:
+    '#type': textfield
+    '#title': 'Barnets CPR-nummer'
+    '#input_mask': 999999-9999
+    '#required': true
+    '#pattern': '^(?:(?:31(?:0[13578]|1[02])|(?:30|29)(?:0[13-9]|1[0-2])|(?:0[1-9]|1[0-9]|2[0-8])(?:0[1-9]|1[0-2]))[0-9]{2}-?[0-9]|290200-?[4-9]|2902(?:(?!00)[02468][048]|[13579][26])-?[0-3])[0-9]{3}|000000-?0000$'
+    '#pattern_error': 'Angiv et korrekt cpr-nummer.'
+  barnets_alder:
+    '#type': textfield
+    '#title': 'Barnets alder'
+    '#required': true
+  skole_privat:
+    '#type': textfield
+    '#title': Skole
+    '#required': true
+henvisers_oplysninger:
+  '#type': section
+  '#title': 'Henvisers oplysninger'
+  henvisers_navn:
+    '#type': textfield
+    '#title': 'Henvisers navn'
+    '#required': true
+  henvisers_stilling:
+    '#type': textfield
+    '#title': 'Henvisers stilling'
+    '#required': true
+  henvisers_e_mailadresse:
+    '#type': email
+    '#title': 'Henvisers e-mailadresse'
+    '#required': true
+henvisningsskema:
+  '#type': section
+  '#title': Henvisningsskema
+  '#title_tag': h3
+  container:
+    '#type': container
+    '#attributes':
+      style: 'background: #E5E4E2; width: 50em; padding: 40px;'
+    er_foraeldremyndigheds_indehavere_og_barnet_indstillet_paa_at_af:
+      '#type': radios
+      '#title': 'Er der samtykke fra (begge) forældremyndighedsindehaver(e) til henvisning til klinisk hypnoterapi?'
+      '#options':
+        Ja: Ja
+        Nej: Nej
+      '#required': true
+    er_barnet_indstillet_paa_at_afproeve_hypnoterapi_:
+      '#type': radios
+      '#title': 'Er barnet indstillet på at afprøve hypnoterapi?'
+      '#options':
+        Ja: Ja
+        Nej: Nej
+      '#required': true
+    info:
+      '#type': fieldset
+      '#title': Info
+      '#description': '<p><strong><span style="font-size:11.0pt"><span style="font-family:&quot;Calibri&quot;,sans-serif">Det er ikke muligt at sende henvisning uden samtykke fra (begge) for&aelig;ldremy</span></span><span style="font-size:11.0pt"><span style="font-family:&quot;Calibri&quot;,sans-serif">ndighedsindehaver(e)</span></span></strong></p>'
+      '#states':
+        visible:
+          ':input[name="er_foraeldremyndigheds_indehavere_og_barnet_indstillet_paa_at_af"]':
+            value: Nej
+    container_01:
+      '#type': container
+      '#states':
+        invisible:
+          ':input[name="er_foraeldremyndigheds_indehavere_og_barnet_indstillet_paa_at_af"]':
+            value: Nej
+      hvad_er_barnets_primaere_udfordring_:
+        '#type': textarea
+        '#title': 'Hvad er barnets primære udfordring?'
+        '#required': true
+      hvor_laenge_har_udfordringen_varet_:
+        '#type': textarea
+        '#title': 'Hvor længe har udfordringen varet?'
+        '#required': true
+      hvilken_indflydelse_har_det_paa_barnets_trivsel_i_skoletid_:
+        '#type': textarea
+        '#title': 'Hvilken indflydelse har udfordringen på barnets trivsel i skoletid?'
+        '#required': true
+      hvilke_tiltag_er_ellers_ivaerksat_tidligere_afproevet_:
+        '#type': textarea
+        '#title': 'Hvilke tiltag er ellers iværksat/tidligere afprøvet i skoletiden?'
+        '#required': true
+      er_barnet_aktuelt_eller_tidligere_tilknyttet_en_af:
+        '#type': checkboxes
+        '#title': 'Er barnet, aktuelt eller tidligere, tilknyttet en af nedenstående?'
+        '#options':
+          PPR: PPR
+          'Egen læge': 'Egen læge'
+          'Privatpraktiserende psykolog': 'Privatpraktiserende psykolog'
+          'Børne- og ungdomspsykiatrien': 'Børne- og ungdomspsykiatrien'
+          Sygehus: Sygehus
+          Andet: Andet
+        '#required': true
+      uddyb_her_ppr:
+        '#type': textarea
+        '#title': 'Uddyb her - PPR'
+        '#states':
+          visible:
+            ':input[name="er_barnet_aktuelt_eller_tidligere_tilknyttet_en_af[PPR]"]':
+              checked: true
+        '#required': true
+      uddyb_her_egen_laege:
+        '#type': textarea
+        '#title': 'Uddyb her - Egen læge'
+        '#states':
+          visible:
+            ':input[name="er_barnet_aktuelt_eller_tidligere_tilknyttet_en_af[Egen læge]"]':
+              checked: true
+        '#required': true
+      uddyb_her_privatpraktiserende_psykolog:
+        '#type': textarea
+        '#title': 'Uddyb her - Privatpraktiserende psykolog'
+        '#required': true
+        '#states':
+          visible:
+            ':input[name="er_barnet_aktuelt_eller_tidligere_tilknyttet_en_af[Privatpraktiserende psykolog]"]':
+              checked: true
+      uddyb_her_boerne_og_ungdompsykiatrien:
+        '#type': textarea
+        '#title': 'Uddyb her - Børne- og ungdompsykiatrien'
+        '#required': true
+        '#states':
+          visible:
+            ':input[name="er_barnet_aktuelt_eller_tidligere_tilknyttet_en_af[Børne- og ungdomspsykiatrien]"]':
+              checked: true
+      uddyb_her_sygehus:
+        '#type': textarea
+        '#title': 'Uddyb her - Sygehus'
+        '#required': true
+        '#states':
+          visible:
+            ':input[name="er_barnet_aktuelt_eller_tidligere_tilknyttet_en_af[Sygehus]"]':
+              checked: true
+      uddyb_her_andet:
+        '#type': textarea
+        '#title': 'Uddyb her - Andet'
+        '#required': true
+        '#states':
+          visible:
+            ':input[name="er_barnet_aktuelt_eller_tidligere_tilknyttet_en_af[Andet]"]':
+              checked: true
+      skolefravaer_den_seneste_maaned:
+        '#type': radios
+        '#title': 'Skolefravær den seneste måned'
+        '#options':
+          'Ingen fravær': 'Ingen fravær'
+          '1-10 %': '1-10 %'
+          '11-25 %': '11-25 %'
+          '26-50 %': '26-50 %'
+          '51-75 %': '51-75 %'
+          '76-100 %': '76-100 %'
+          'Ved ikke': 'Ved ikke'
+        '#required': true
+      hvad_er_oensket_maal_for_forventning_til_effekt_af_hypnoterapi_:
+        '#type': textarea
+        '#title': 'Hvad er det ønskede konkrete mål for hypnoterapi'
+        '#placeholder': 'Fx bedre søvn, mere tid i skolen, færre mavesmerter, færre bekymringer'
+        '#required': true
+    skema:
+      '#type': os2forms_attachment
+      '#title': Skema
+      '#filename': 'Henvisningsskema Hypnoterapi [webform_submission:values:barnets_navn:raw].pdf'
+      '#sanitize': true
+      '#export_type': pdf
+      '#excluded_elements': {  }
+      '#exclude_empty': true
+      '#exclude_empty_checkbox': true
+actions:
+  '#type': webform_actions
+  '#title': 'Send knap(per)'
+  '#states':
+    disabled:
+      ':input[name="er_foraeldremyndigheds_indehavere_og_barnet_indstillet_paa_at_af"]':
+        value: Nej
+markup:
+  '#type': markup
+  '#markup': |-
+    <span style="font-size:12pt"><span style="font-family:Aptos,sans-serif">Du kan l&aelig;se om <a href="https://www.aarhus.dk/om-kommunen/databeskyttelse/behandling-af-personoplysninger-i-boern-og-unge/" style="color:#0000ee; text-decoration:underline" target="_blank" title="https://www.aarhus.dk/om-kommunen/databeskyttelse/behandling-af-personoplysninger-i-boern-og-unge/"><span style="color:#6888c9">behandling af personoplysninger i B&oslash;rn og Unge (aarhus.dk)</span></a> her, og specifikt om vores behandling ved <a href="https://aarhus.dk/om-kommunen/databeskyttelse/behandling-af-personoplysninger-i-boern-og-unge/den-kommunale-sundhedstjeneste-forebyggende-sundhedsydelser-til-skoleboern" style="color:#0000ee; text-decoration:underline" target="_blank" title="skolesundhedsplejens generelle tilbud for 0-9. klasse"><span style="color:#6888c9">forebyggende sundhedsydelser til skoleb&oslash;rn</span></a> her.</span></span><br />
+    &nbsp;
