@@ -3,7 +3,7 @@
 import json
 import urllib.parse
 
-import sys
+# import sys
 
 from io import BytesIO
 
@@ -86,8 +86,6 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
     excel_file_df = pd.read_excel(excel_stream)
 
     orchestrator_connection.log_trace(f"Excel file retrieved. {len(excel_file_df)} rows found in existing sheet.")
-
-    sys.exit()
 
     # Create a set of serial numbers from the Excel file
     serial_set = set(excel_file_df["Serial number"].tolist())
