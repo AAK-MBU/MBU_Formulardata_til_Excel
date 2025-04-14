@@ -3,6 +3,8 @@
 import json
 import urllib.parse
 
+import sys
+
 from io import BytesIO
 
 import math
@@ -60,7 +62,7 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
     elif os2_webform_id == "henvisningsskema_til_klinisk_hyp":
         site_name = "tea-teamsite10693"
 
-        folder_name = "General/Udtræk OS2Forms/Henvisninsgsskema"
+        folder_name = "General/Udtræk OS2Forms/Henvisningsskema"
 
         excel_file_name = "Dataudtræk henvisningsskema hypnoterapi.xlsx"
 
@@ -84,6 +86,8 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
     excel_file_df = pd.read_excel(excel_stream)
 
     orchestrator_connection.log_trace(f"Excel file retrieved. {len(excel_file_df)} rows found in existing sheet.")
+
+    sys.exit()
 
     # Create a set of serial numbers from the Excel file
     serial_set = set(excel_file_df["Serial number"].tolist())
