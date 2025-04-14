@@ -32,11 +32,10 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
 
     orchestrator_connection.log_trace("Running process.")
 
+    site_name = ""
     excel_file_name = ""
     folder_name = ""
     formular_mapping = None
-
-    site_name = "tea-teamsite10693"
 
     new_forms = []
 
@@ -50,23 +49,29 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
     password = orchestrator_connection.get_credential("SvcRpaMBU002").password
 
     if os2_webform_id == "sundung_aarhus":
-        excel_file_name = "Dataudtræk SundUng Aarhus.xlsx"
+        site_name = "tea-teamsite11121"
 
-        folder_name = "General/Udtræk OS2Forms"
+        folder_name = "General/Udtræk OS2-formularer"
+
+        excel_file_name = "Dataudtræk SundUng Aarhus.xlsx"
 
         formular_mapping = formular_mappings.sundung_aarhus_mapping
 
     elif os2_webform_id == "henvisningsskema_til_klinisk_hyp":
-        excel_file_name = "Dataudtræk henvisningsskema hypnoterapi.xlsx"
+        site_name = "tea-teamsite10693"
 
-        folder_name = "General/Udtræk OS2Forms"
+        folder_name = "General/Udtræk OS2Forms/Henvisninsgsskema"
+
+        excel_file_name = "Dataudtræk henvisningsskema hypnoterapi.xlsx"
 
         formular_mapping = formular_mappings.henvisningsskema_til_klinisk_hyp_mapping
 
     elif os2_webform_id == "spoergeskema_hypnoterapi_foer_fo":
-        excel_file_name = "Dataudtræk spørgeskema hypnoterapi.xlsx"
+        site_name = "tea-teamsite10693"
 
-        folder_name = "General/Udtræk OS2Forms"
+        folder_name = "General/Udtræk OS2Forms/Spørgeskema"
+
+        excel_file_name = "Dataudtræk spørgeskema hypnoterapi.xlsx"
 
         formular_mapping = formular_mappings.spoergeskema_hypnoterapi_foer_fo_mapping
 
