@@ -77,81 +77,126 @@ spoergeskema_hypnoterapi_foer_fo_mapping = {
     'her_er_en_linke_med_prikker_fra_0_til_10_prik_0_betyder_det_vaer': 'Her er en linje med prikker fra 0 til 10. Prik 0 betyder "det værst mulige liv" for dig, og prik 10 betyder "det bedst mulige liv" for dig. Hvor på linjen synes du selv, du er for tiden?'
 }
 
+opfoelgende_spoergeskema_hypnote_mapping = {
+    "serial": "Serial number",
+    "created": "Oprettet",
+    "completed": "Gennemført",
+    "navn": "Navn",
+    "cpr_nummer": "CPR-nummer",
+    "paa_vegne_af_mit_barn": "På vegne af mit barn",
+    "mit_barn_kommer_ikke_frem_i_listen": "Mit barn kommer ikke frem i listen",
+    "barnets_navn": "Barnets navn",
+    "cpr_nummer_barn": "Barnets CPR-nummer",
+    "barnets_navn_manuelt": "Barnets navn manuelt",
+    "cpr_nummr_barnet_manuelt": "Barnets CPR-nummer manuelt",
+    "er_voksen": "Er voksen",
+    "spoergsmaal_barn_tabel": {
+        "spg_barn_1": "Behandlingen hjalp mig (barn)",
+        "spg_barn_2": "Vi har det bedre i familien nu, end før behandlingen begyndte (barn)",
+        "spg_barn_3": "Hvis en ven havde brug for denne form for hjælp, ville jeg anbefale ham/hende behandlingen (barn)",
+        "spg_barn_4": "Behandlerne forstod det vigtigste af mine bekymringer og problemer",
+        "spg_barn_5": "Jeg havde tillid til behandleren",
+        "spg_barn_6": "Behandlingen medførte, at jeg fik det dårligere (barn)",
+        "spg_barn_7": "Efter behandlingen har jeg fået mere lyst til at være sammen med mine venner",
+    },
+    "her_er_plads_til_at_du_kan_skrive_hvad_du_taenker_eller_foeler_o": "Her er plads til, at du kan skrive, hvad du tænker eller føler om behandlingen",
+    "spoergsmaal_foraelder_tabel": {
+        "spg_foraelder_1": "Behandlingen hjalp mit barn",
+        "spg_foraelder_2": "Behandlingen hjalp mig (forælder)",
+        "spg_foraelder_3": "Hvis en ven havde brug for denne form for hjælp, ville jeg anbefale vedkommende behandlingen (forælder)",
+        "spg_foraelder_4": "Jeg følte mig passende informeret om meningen, formålet og forløbet af behandlingen",
+        "spg_foraelder_5": "Vi har det bedre i familien nu, end før behandlingen begyndte (forælder)",
+        "spg_foraelder_6": "Under behandlingen blev jeg i stand til at forandre min adfærd over for mit barn på en positiv måde",
+        "spg_foraelder_7": "Under behandlingen opnåede jeg en bedre forståelse af mit barns psykiske tilstand",
+        "spg_foraelder_8": "Jeg havde tillid til vores behandler",
+        "spg_foraelder_9": "Behandlingen medførte, at mit barn fik det dårligere",
+        "spg_foraelder_10": "Behandlingen medførte, at jeg fik det dårligere (forælder)",
+    },
+    "her_kan_du_selv_skrive_dine_kommentarer": "Her kan du selv skrive dine kommentarer",
+    "hvad_var_rigtig_godt_ved_forloebet": "Hvad var rigtig godt ved forløbet?",
+    "var_der_noget_du_ikke_syntes_om_eller_noget_der_kan_forbedres": "Var der noget du ikke synes om eller noget der kan forbedres?",
+    "er_der_andet_du_oensker_at_fortaelle_os_om_det_forloeb_du_har_haft": "Er der andet du ønsker at fortælle os, om det forløb du har haft?",
+}
+
 
 def transform_form_submission(form_serial_number, form: dict, mapping: dict) -> dict:
     """
     Transforms a form submission dictionary using the provided mapping.
-
-    For each field:
-      - Replaces newline characters with a full stop and a space.
-      - If the value is a string that looks like a list (e.g. "['Mail', 'SMS']"),
-        converts it to a comma-separated string.
-
-    Also adds additional fields from the form's "entity" section, formatting date/time fields.
-
-    Args:
-        form_serial_number: The serial number from the form's entity.
-        form (dict): The raw form submission data.
-        mapping (dict): A dictionary mapping source keys to target Excel column names.
-
-    Returns:
-        dict: A new dictionary with keys matching the Excel sheet column names.
+    Handles nested mapping for fields like 'spoergsmaal_barn_tabel'.
     """
 
-    form_data = form.get("data", {})
     transformed = {}
 
-    for source_key, target_column in mapping.items():
-        value = form_data.get(source_key, None)
+    form_data = form.get("data", {})
 
-        # If value is a list, join the items with a comma and space.
-        if isinstance(value, list):
-            value = ", ".join(str(item) for item in value)
+    for source_key, target in mapping.items():
+        # Check if we need to handle a nested mapping
+        if isinstance(target, dict):
+            nested_data = form_data.get(source_key, {})
 
-        # If value is a string, perform cleaning.
-        elif isinstance(value, str):
-            # Replace newline characters
-            value = value.replace("\r\n", ". ").replace("\n", ". ")
+            for nested_key, nested_target_column in target.items():
+                value = nested_data.get(nested_key, None)
 
-            # If the string looks like a list, try to convert it.
-            if value.startswith("[") and value.endswith("]"):
-                try:
-                    parsed = ast.literal_eval(value)
+                # Process the value: join lists, replace newlines, and convert list strings
+                if isinstance(value, list):
+                    value = ", ".join(str(item) for item in value)
 
-                    if isinstance(parsed, list):
-                        value = ", ".join(str(item) for item in parsed)
+                elif isinstance(value, str):
+                    value = value.replace("\r\n", ". ").replace("\n", ". ")
 
-                except Exception:
-                    # Fallback: strip brackets and quotes if parsing fails
-                    value = value.strip("[]").replace("'", "").replace('"', "").strip()
+                    if value.startswith("[") and value.endswith("]"):
 
-        transformed[target_column] = value
+                        try:
+                            parsed = ast.literal_eval(value)
 
-    # Retrieve additional fields from the "entity" portion and format the dates
+                            if isinstance(parsed, list):
+                                value = ", ".join(str(item) for item in parsed)
+
+                        except Exception:
+                            value = value.strip("[]").replace("'", "").replace('"', "").strip()
+
+                transformed[nested_target_column] = value
+
+        else:
+            value = form_data.get(source_key, None)
+
+            if isinstance(value, list):
+                value = ", ".join(str(item) for item in value)
+
+            elif isinstance(value, str):
+                value = value.replace("\r\n", ". ").replace("\n", ". ")
+
+                if value.startswith("[") and value.endswith("]"):
+                    try:
+                        parsed = ast.literal_eval(value)
+
+                        if isinstance(parsed, list):
+                            value = ", ".join(str(item) for item in parsed)
+
+                    except Exception:
+                        value = value.strip("[]").replace("'", "").replace('"', "").strip()
+
+            transformed[target] = value
+
+    # Process date/time fields from the "entity" section
     try:
         created_str = form["entity"]["created"][0]["value"]
 
         completed_str = form["entity"]["completed"][0]["value"]
 
-        # Convert ISO date strings to datetime objects and reformat them
         created_dt = datetime.fromisoformat(created_str)
 
         completed_dt = datetime.fromisoformat(completed_str)
 
-        # Format as "YYYY-MM-DD HH:MM:SS"
-        created = created_dt.strftime("%Y-%m-%d %H:%M:%S")
+        transformed["Oprettet"] = created_dt.strftime("%Y-%m-%d %H:%M:%S")
 
-        completed = completed_dt.strftime("%Y-%m-%d %H:%M:%S")
+        transformed["Gennemført"] = completed_dt.strftime("%Y-%m-%d %H:%M:%S")
 
     except (KeyError, IndexError, ValueError):
-        created = None
+        transformed["Oprettet"] = None
 
-        completed = None
+        transformed["Gennemført"] = None
 
     transformed["Serial number"] = form_serial_number
-
-    transformed["Oprettet"] = created
-
-    transformed["Gennemført"] = completed
 
     return transformed

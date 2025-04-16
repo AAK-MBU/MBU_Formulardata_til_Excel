@@ -23,11 +23,11 @@ def main():
     # !!! DELETE THIS !!!
     # sys.argv = [
     #     "linear_framework.py",
-    #     "OS2 Formulardata til Sharepoint - SundUng Aarhus",
+    #     "dadj - OS2 Formulardata til Sharepoint - Opfølgende spørgeskema til Hypnoterapi",
     #     os.getenv("ORCHESTRATOR_CONNECTION_STRING"),
     #     os.getenv("ORCHESTRATOR_ENCRYPTION_KEY"),
     #     json.dumps({
-    #         "os2_webform_id": "sundung_aarhus",
+    #         "os2_webform_id": "opfoelgende_spoergeskema_hypnote",
     #     })
     # ]
     # !!! DELETE THIS !!!

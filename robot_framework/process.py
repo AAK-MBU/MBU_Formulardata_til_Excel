@@ -77,6 +77,15 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
 
         formular_mapping = formular_mappings.spoergeskema_hypnoterapi_foer_fo_mapping
 
+    elif os2_webform_id == "opfoelgende_spoergeskema_hypnote":
+        site_name = "tea-teamsite10693"
+
+        folder_name = "General/Udtræk OS2Forms/Opfølgende spørgeskema"
+
+        excel_file_name = "Dataudtræk opfølgende spørgeskema hypnoterapi.xlsx"
+
+        formular_mapping = formular_mappings.opfoelgende_spoergeskema_hypnote_mapping
+
     sharepoint_api = Sharepoint(username=username, password=password, site_url=SHAREPOINT_FOLDER_URL, site_name=site_name, document_library=SHAREPOINT_DOCUMENT_LIBRARY)
 
     # STEP 1 - Get the Excel file from Sharepoint
