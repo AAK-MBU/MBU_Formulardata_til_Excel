@@ -118,6 +118,109 @@ opfoelgende_spoergeskema_hypnote_mapping = {
     "er_der_andet_du_oensker_at_fortaelle_os_om_det_forloeb_du_har_haft": "Er der andet du ønsker at fortælle os, om det forløb du har haft?",
 }
 
+foraelder_en_god_overgang_fra_hj_mapping = {
+    "serial": "Serial number",
+    "created": "Oprettet",
+    "completed": "Gennemført",
+    "navn": "Navn",
+    "cpr_nummer": "CPR-nummer",
+    "paa_vegne_af_mit_barn": "På vegne af mit barn",
+    "mit_barn_kommer_ikke_frem_i_listen": "Mit barn kommer ikke frem i listen",
+    "barnets_navn": "Barnets navn",
+    "cpr_nummer_barn": "Barnets CPR-nummer",
+    "barnets_navn_manuelt": "Barnets navn manuelt",
+    "cpr_nummr_barnet_manuelt": "Barnets CPR-nummer manuelt",
+    "spoergsmaal_foraelder_tabel": {
+        "spg_foraelder_1": "Indsatsen hjalp mit barns opstart i vuggestue/dagpleje",
+        "spg_foraelder_2": "Indsatsen gav mig tryghed i mit barns opstart i vuggestue/dagpleje",
+        "spg_foraelder_3": "Overgangsmødet med sundhedsplejerske og pædagog var meningsfuldt",
+        "spg_foraelder_4": "Jeg oplevede, at samarbejdet mellem sundhedsplejerske og pædagog gavnede mit barn",
+        "spg_foraelder_5": "Jeg følte mig passende informeret om meningen, formålet og forløbet",
+        "spg_foraelder_6": "Jeg har fået en bedre forståelse for, hvordan mit barn bedst støttes i sin sociale udvikling",
+        "spg_foraelder_7": "Hvis en ven blev tilbudt indsatsen, ville jeg anbefale den",
+    },
+    "hvad_taenkte_du_om_at_sundhedsplejersken_tilb": "Hvad tænkte du om, at sundhedsplejersken tilbød indsatsen til dig og dit barn?",
+    "hvad_var_rigtig_godt_ved_forloebet": "Hvad var rigtig godt ved forløbet?",
+    "var_der_noget_du_ikke_syntes_om_eller_noget_der_kan_forbedres": "Var der noget, du ikke synes om eller noget, der kan forbedres?",
+    "er_der_andet_du_oensker_at_fortaelle_os_om_det_forloeb_du_har_haft": "Er der andet, du ønsker at fortælle os om det forløb, du har haft?",
+}
+
+fagperson_en_god_overgang_fra_hj_mapping = {
+    "serial": "Serial number",
+    "created": "Oprettet",
+    "completed": "Gennemført",
+    "barnets_navn": "Barnets navn",
+    "institution": "Skole",
+    "fagpersonalets_navn": "Fagpersonalets navn",
+    "fagpersonalets_stilling": "Fagpersonalets stilling",
+    "spoergsmaal_fagpersoner_tabel": {
+        "spg_fagperson_1": "Indsatsen hjalp barnet i opstarten",
+        "spg_fagperson_2": "Jeg følte mig passende informeret om meningen, formålet og forløbet",
+        "spg_fagperson_7": "Overgangsmødet med forældre og vejledende sundhedsplejerske var meningsfuldt",
+        "spg_fagperson_3": "Det tværfaglige samarbejde med vejledende sundhedsplejerske var meningsfuldt",
+        "spg_fagperson_4": "Jeg fik en bedre forståelse for, hvordan barnet bedst blev støttet i opstarten",
+        "spg_fagperson_5": "Indsatsen medførte, at barnets opstart var svær",
+        "spg_fagperson_6": "Hvis et andet barn havde brug for denne form for støtte, ville jeg anbefale indsatsen",
+    },
+    "hvad_var_rigtig_godt_ved_forloebet": "Hvad var rigtig godt ved forløbet?",
+    "var_der_noget_du_ikke_syntes_om_eller_noget_der_kan_forbedres": "Var der noget, du ikke synes om eller noget, der kan forbedres?",
+    "er_der_andet_du_oensker_at_fortaelle_os_om_det_forloeb_du_har_haft": "Er der andet, du ønsker at fortælle os om indsatsen?",
+}
+
+basisteam_spoergeskema_til_forae_mapping = {
+    "serial": "Serial number",
+    "created": "Oprettet",
+    "completed": "Gennemført",
+    "navn": "Navn",
+    "cpr_nummer": "CPR-nummer",
+    "paa_vegne_af_mit_barn": "På vegne af mit barn",
+    "mit_barn_kommer_ikke_frem_i_listen": "Mit barn kommer ikke frem i listen",
+    "barnets_navn": "Barnets navn",
+    "cpr_nummer_barn": "Barnets CPR-nummer",
+    "barnets_navn_manuelt": "Barnets navn manuelt",
+    "cpr_nummr_barnet_manuelt": "Barnets CPR-nummer manuelt",
+    "spoergsmaal_foraelder_tabel": {
+        "spg_foraelder_1": 'Forløbet hjalp mit barn',
+        "spg_foraelder_2": 'Forløbet hjalp mig',
+        "spg_foraelder_3": 'Hvis en ven havde brug for denne form for hjælp, ville jeg anbefale vedkommende forløbet',
+        "spg_foraelder_4": 'Jeg følte mig passende informeret om meningen, formålet og forløbet',
+        "spg_foraelder_5": 'Vi har det bedre i familien nu, end før forløbet begyndte',
+        "spg_foraelder_6": 'Under forløbet blev jeg i stand til at forandre min adfærd over for mit barn på en positiv måde',
+        "spg_foraelder_7": 'Under forløbet opnåede jeg en bedre forståelse af mit barns psykiske tilstand',
+        "spg_foraelder_8": 'Jeg havde tillid til Basisteam',
+        "spg_foraelder_9": 'Forløbet medførte, at mit barn fik det dårligere',
+        "spg_foraelder_10": 'Forløbet medførte, at jeg fik det dårligere',
+    },
+    "hvad_var_rigtig_godt_ved_forloebet": "Hvad var rigtig godt ved forløbet?",
+    "var_der_noget_du_ikke_syntes_om_eller_noget_der_kan_forbedres": "Var der noget, du ikke synes om eller noget, der kan forbedres?",
+    "er_der_andet_du_oensker_at_fortaelle_os_om_det_forloeb_du_har_haft": "Er der andet, du ønsker at fortælle os om det forløb, du har haft?",
+}
+
+basisteam_spoergeskema_til_fagpe_mapping = {
+    "serial": "Serial number",
+    "created": "Oprettet",
+    "completed": "Gennemført",
+    "barnets_navn": "Barnets navn",
+    "cpr_barnets_nummer": "Barnets CPR-nummer",
+    "skole_privat": "Skole/Institution",
+    "fagpersonalets_navn": "Fagpersonalets navn",
+    "fagpersonalets_stilling": "Fagpersonalets stilling",
+    "spoergsmaal_fagperson_tabel": {
+        "spg_fagperson_1": 'Forløbet hjalp barnet',
+        "spg_fagperson_2": 'Forløbet hjalp os på skolen/institutionen',
+        "spg_fagperson_3": 'Hvis et andet barn havde brug for denne form for hjælp, ville jeg anbefale Basisteam',
+        "spg_fagperson_4": 'Jeg følte mig passende informeret om meningen, formålet og forløbet',
+        "spg_fagperson_5": 'Under forløbet blev vi på skolen/institutionen rustet til at håndtere elevens problemer på en positiv måde',
+        "spg_fagperson_6": 'Under forløbet opnåede jeg en bedre forståelse af barnets psykiske tilstand',
+        "spg_fagperson_7": 'Jeg havde tillid til Basisteam',
+        "spg_fagperson_8": 'Forløbet medførte, at barnet fik det dårligere',
+        "spg_fagperson_9": 'Sparringsmøderne med Basisteam var brugbare',
+    },
+    "hvad_var_rigtig_godt_ved_forloebet": "Hvad var rigtig godt ved Basisteam?",
+    "var_der_noget_du_ikke_syntes_om_eller_noget_der_kan_forbedres": "Var der noget, du ikke synes om eller noget, der kan forbedres?",
+    "er_der_andet_du_oensker_at_fortaelle_os_om_det_forloeb_du_har_haft": "Er der andet, du ønsker at fortælle os om det forløb, I som skole/institution har deltaget i?",
+}
+
 
 def transform_form_submission(form_serial_number, form: dict, mapping: dict) -> dict:
     """

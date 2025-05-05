@@ -5,9 +5,6 @@
 
 import sys
 
-# import os
-# import json
-
 from OpenOrchestrator.orchestrator_connection.connection import OrchestratorConnection
 
 from robot_framework import initialize
@@ -21,13 +18,16 @@ def main():
     """The entry point for the framework. Should be called as the first thing when running the robot."""
 
     # !!! DELETE THIS !!!
+    # import os
+    # import json
+
     # sys.argv = [
     #     "linear_framework.py",
     #     "dadj - OS2 Formulardata til Sharepoint - Opfølgende spørgeskema til Hypnoterapi",
     #     os.getenv("ORCHESTRATOR_CONNECTION_STRING"),
     #     os.getenv("ORCHESTRATOR_ENCRYPTION_KEY"),
     #     json.dumps({
-    #         "os2_webform_id": "opfoelgende_spoergeskema_hypnote",
+    #         "os2_webform_id": "foraelder_en_god_overgang_fra_hj",
     #     })
     # ]
     # !!! DELETE THIS !!!
