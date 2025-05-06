@@ -150,7 +150,7 @@ fagperson_en_god_overgang_fra_hj_mapping = {
     "created": "Oprettet",
     "completed": "Gennemført",
     "barnets_navn": "Barnets navn",
-    "institution": "Skole",
+    "institution": "Institution",
     "fagpersonalets_navn": "Fagpersonalets navn",
     "fagpersonalets_stilling": "Fagpersonalets stilling",
     "spoergsmaal_fagpersoner_tabel": {
@@ -162,7 +162,7 @@ fagperson_en_god_overgang_fra_hj_mapping = {
         "spg_fagperson_5": "Indsatsen medførte, at barnets opstart var svær",
         "spg_fagperson_6": "Hvis et andet barn havde brug for denne form for støtte, ville jeg anbefale indsatsen",
     },
-    "hvad_var_rigtig_godt_ved_forloebet": "Hvad var rigtig godt ved forløbet?",
+    "hvad_var_rigtig_godt_ved_forloebet": "Hvad var rigtig godt ved indsatsen?",
     "var_der_noget_du_ikke_syntes_om_eller_noget_der_kan_forbedres": "Var der noget, du ikke synes om eller noget, der kan forbedres?",
     "er_der_andet_du_oensker_at_fortaelle_os_om_det_forloeb_du_har_haft": "Er der andet, du ønsker at fortælle os om indsatsen?",
 }
