@@ -88,13 +88,13 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
 
     elif os2_webform_id == "basisteam_spoergeskema_til_forae":
         site_name = "tea-teamsite11462"
-        folder_name = "General/Besvarelser fra OS2Forms - forældre"
+        folder_name = "General/Udtræk OS2Forms"
         excel_file_name = "Dataudtræk basisteam - forældre.xlsx"
         formular_mapping = formular_mappings.basisteam_spoergeskema_til_forae_mapping
 
     elif os2_webform_id == "basisteam_spoergeskema_til_fagpe":
         site_name = "tea-teamsite11462"
-        folder_name = "General/Besvarelser fra OS2Forms - fagpersoner"
+        folder_name = "General/Udtræk OS2Forms"
         excel_file_name = "Dataudtræk basisteam - fagperson.xlsx"
         formular_mapping = formular_mappings.basisteam_spoergeskema_til_fagpe_mapping
 
