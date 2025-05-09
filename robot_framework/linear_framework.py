@@ -18,18 +18,20 @@ def main():
     """The entry point for the framework. Should be called as the first thing when running the robot."""
 
     # !!! DELETE THIS !!!
+
     # import os
     # import json
 
     # sys.argv = [
     #     "linear_framework.py",
-    #     "dadj - OS2 Formulardata til Sharepoint - Opfølgende spørgeskema til Hypnoterapi",
+    #     "DADJ - OS2 Formulardata til Sharepoint - Basisteam - spørgeskema til fagpersoner",
     #     os.getenv("ORCHESTRATOR_CONNECTION_STRING"),
     #     os.getenv("ORCHESTRATOR_ENCRYPTION_KEY"),
     #     json.dumps({
-    #         "os2_webform_id": "foraelder_en_god_overgang_fra_hj",
+    #         "os2_webform_id": "basisteam_spoergeskema_til_fagpe",
     #     })
     # ]
+
     # !!! DELETE THIS !!!
 
     orchestrator_connection = OrchestratorConnection.create_connection_from_args()
