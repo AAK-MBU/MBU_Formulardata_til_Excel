@@ -1,9 +1,11 @@
 """This module contains the main process of the robot."""
 
+# import sys
+
 import json
 import urllib.parse
 
-# import sys
+import datetime
 
 from typing import Dict, Any
 
@@ -119,6 +121,18 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
         excel_file_name = "Dataudtræk SundUng Aarhus.xlsx"
         formular_mapping = formular_mappings.sundung_aarhus_mapping
 
+    elif os2_webform_id == "tilmelding_til_modersmaalsunderv":
+        # today = datetime.date.today()
+        today = datetime.date(2025, 5, 5)
+
+        monday_last_week = today - datetime.timedelta(days=today.weekday() + 7)
+        sunday_last_week = monday_last_week + datetime.timedelta(days=6)
+
+        site_name = "Teams-Modersmlsundervisning"
+        folder_name = "General"
+        formular_mapping = formular_mappings.tilmelding_til_modersmaalsunderv_mapping
+        excel_file_name = f"Dataudtræk - {monday_last_week} til {sunday_last_week}.xlsx"
+
     sharepoint_api = Sharepoint(username=username, password=password, site_url=SHAREPOINT_FOLDER_URL, site_name=site_name, document_library=SHAREPOINT_DOCUMENT_LIBRARY)
 
     # STEP 1 - Get all active forms from the SQL server
@@ -128,85 +142,128 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
     orchestrator_connection.log_trace(f"OS2 forms retrieved. {len(all_active_forms)} active forms found.")
     print(f"OS2 forms retrieved. {len(all_active_forms)} active forms found.")
 
-    if str(current_day_of_month) == "1":
-        orchestrator_connection.log_trace("Current day is the first of the month - updating Excel file with new submissions.")
-        print("Current day is the first of the month - updating Excel file with new submissions.")
+    # Modersmaalsundervisning has a different flow - therefore we skip the Excel overwrite functionality if we are currently running that formular
+    if os2_webform_id != "tilmelding_til_modersmaalsunderv":
+        if str(current_day_of_month) == "1":
+            orchestrator_connection.log_trace("Current day is the first of the month - updating Excel file with new submissions.")
+            print("Current day is the first of the month - updating Excel file with new submissions.")
 
-        # STEP 2 - Get the Excel file from Sharepoint
-        orchestrator_connection.log_trace("STEP 2 - Retrieving existing Excel sheet.")
-        print("STEP 2 - Retrieving existing Excel sheet.")
-        excel_file = sharepoint_api.fetch_file_using_open_binary(excel_file_name, folder_name)
-        excel_stream = BytesIO(excel_file)
-        excel_file_df = pd.read_excel(excel_stream)
-        orchestrator_connection.log_trace(f"Excel file retrieved. {len(excel_file_df)} rows found in existing sheet.")
-        print(f"Excel file retrieved. {len(excel_file_df)} rows found in existing sheet.")
+            # STEP 2 - Get the Excel file from Sharepoint
+            orchestrator_connection.log_trace("STEP 2 - Retrieving existing Excel sheet.")
+            print("STEP 2 - Retrieving existing Excel sheet.")
+            excel_file = sharepoint_api.fetch_file_using_open_binary(excel_file_name, folder_name)
+            excel_stream = BytesIO(excel_file)
+            excel_file_df = pd.read_excel(excel_stream)
+            orchestrator_connection.log_trace(f"Excel file retrieved. {len(excel_file_df)} rows found in existing sheet.")
+            print(f"Excel file retrieved. {len(excel_file_df)} rows found in existing sheet.")
 
-        # Create a set of serial numbers from the Excel file
-        serial_set = set(excel_file_df["Serial number"].tolist())
+            # Create a set of serial numbers from the Excel file
+            serial_set = set(excel_file_df["Serial number"].tolist())
 
-        # STEP 3 - Loop through all active forms and transform them to the correct format
-        orchestrator_connection.log_trace("STEP 3 - Looping forms and mapping retrieved data to fit Excel column names.")
-        print("STEP 3 - Looping forms and mapping retrieved data to fit Excel column names.")
+            # STEP 3 - Loop through all active forms and transform them to the correct format
+            orchestrator_connection.log_trace("STEP 3 - Looping forms and mapping retrieved data to fit Excel column names.")
+            print("STEP 3 - Looping forms and mapping retrieved data to fit Excel column names.")
+            for form in all_active_forms:
+                form_serial_number = form["entity"]["serial"][0]["value"]
+
+                if form_serial_number in serial_set:
+                    continue
+
+                transformed_row = formular_mappings.transform_form_submission(form_serial_number, form, formular_mapping)
+
+                new_forms.append(transformed_row)
+
+            # STEP 4 & 5 - If new forms are found, append them to the Excel file, format the file and upload it to Sharepoint
+            if new_forms:
+                orchestrator_connection.log_trace(f"New forms found. {len(new_forms)} new forms to be added.")
+                print(f"New forms found. {len(new_forms)} new forms to be added.")
+
+                new_forms_df = pd.DataFrame(new_forms)
+
+                # Append the new forms to the existing DataFrame
+                updated_excel_df = pd.concat([excel_file_df, new_forms_df], ignore_index=True)
+
+                # Sort by "Serial number" in descending order
+                updated_excel_df.sort_values(by="Serial number", ascending=False, inplace=True)
+
+                # Save the updated DataFrame to an in-memory Excel file
+                updated_excel_stream = BytesIO()
+                updated_excel_df.to_excel(updated_excel_stream, index=False, engine="openpyxl")
+                updated_excel_stream.seek(0)
+
+                # Apply formatting and get the formatted stream
+                orchestrator_connection.log_trace("STEP 4 - Formatting Excel file.")
+                print("STEP 4 - Formatting Excel file.")
+                formatted_stream = format_excel_file(updated_excel_stream)
+
+                # Upload the formatted Excel file to SharePoint
+                orchestrator_connection.log_trace("STEP 5 - Uploading formatted Excel file to Sharepoint.")
+                print("STEP 5 - Uploading formatted Excel file to Sharepoint.")
+                sharepoint_api.upload_file_from_bytes(
+                    binary_content=formatted_stream.getvalue(),
+                    file_name=excel_file_name,
+                    folder_name=folder_name
+                )
+
+            else:
+                print("No new forms found.")
+
+                orchestrator_connection.log_trace("No new forms found.")
+                print("No new forms found.")
+
+        if upload_pdfs_to_sharepoint:
+            # Upload the PDFs to SharePoint
+            orchestrator_connection.log_trace("Uploading PDFs to SharePoint.")
+            print("Uploading PDFs to SharePoint.")
+
+            upload_pdf_to_sharepoint.upload_pdf_to_sharepoint(
+                orchestrator_connection=orchestrator_connection,
+                sharepoint_api=sharepoint_api,
+                folder_name=upload_pdfs_to_sharepoint_folder_name,
+                os2_api_key=os2_api_key,
+                active_forms=all_active_forms
+            )
+
+    # The webform is tilmelding_til_modersmaalsundervising - therefore we run a different flow
+    else:
+        orchestrator_connection.log_trace(f"Filtering forms completed between {monday_last_week} and {sunday_last_week}")
+        print(f"Filtering forms completed between {monday_last_week} and {sunday_last_week}")
+
+        # We start by filtering out submissions that were not submitted in the previous week
         for form in all_active_forms:
             form_serial_number = form["entity"]["serial"][0]["value"]
 
-            if form_serial_number in serial_set:
-                continue
+            completed_str = form["entity"]["completed"][0]["value"]
 
-            transformed_row = formular_mappings.transform_form_submission(form_serial_number, form, formular_mapping)
+            if completed_str:
+                completed_time = datetime.datetime.fromisoformat(completed_str).date()
 
-            new_forms.append(transformed_row)
+                if monday_last_week <= completed_time <= sunday_last_week:
+                    transformed_row = formular_mappings.transform_form_submission(form_serial_number, form, formular_mapping)
 
-        # STEP 4 & 5 - If new forms are found, append them to the Excel file, format the file and upload it to Sharepoint
+                    new_forms.append(transformed_row)
+
+        # If any new forms were submitted for the previous week, we initialize a dataframe of these
         if new_forms:
-            orchestrator_connection.log_trace(f"New forms found. {len(new_forms)} new forms to be added.")
-            print(f"New forms found. {len(new_forms)} new forms to be added.")
-
             new_forms_df = pd.DataFrame(new_forms)
 
-            # Append the new forms to the existing DataFrame
-            updated_excel_df = pd.concat([excel_file_df, new_forms_df], ignore_index=True)
-
             # Sort by "Serial number" in descending order
-            updated_excel_df.sort_values(by="Serial number", ascending=False, inplace=True)
+            new_forms_df.sort_values(by="Serial number", ascending=False, inplace=True)
 
             # Save the updated DataFrame to an in-memory Excel file
             updated_excel_stream = BytesIO()
-            updated_excel_df.to_excel(updated_excel_stream, index=False, engine="openpyxl")
+            new_forms_df.to_excel(updated_excel_stream, index=False, engine="openpyxl")
             updated_excel_stream.seek(0)
 
             # Apply formatting and get the formatted stream
-            orchestrator_connection.log_trace("STEP 4 - Formatting Excel file.")
-            print("STEP 4 - Formatting Excel file.")
             formatted_stream = format_excel_file(updated_excel_stream)
 
             # Upload the formatted Excel file to SharePoint
-            orchestrator_connection.log_trace("STEP 5 - Uploading formatted Excel file to Sharepoint.")
-            print("STEP 5 - Uploading formatted Excel file to Sharepoint.")
             sharepoint_api.upload_file_from_bytes(
                 binary_content=formatted_stream.getvalue(),
                 file_name=excel_file_name,
                 folder_name=folder_name
             )
-
-        else:
-            print("No new forms found.")
-
-            orchestrator_connection.log_trace("No new forms found.")
-            print("No new forms found.")
-
-    if upload_pdfs_to_sharepoint:
-        # Upload the PDFs to SharePoint
-        orchestrator_connection.log_trace("Uploading PDFs to SharePoint.")
-        print("Uploading PDFs to SharePoint.")
-
-        upload_pdf_to_sharepoint.upload_pdf_to_sharepoint(
-            orchestrator_connection=orchestrator_connection,
-            sharepoint_api=sharepoint_api,
-            folder_name=upload_pdfs_to_sharepoint_folder_name,
-            os2_api_key=os2_api_key,
-            active_forms=all_active_forms
-        )
 
     orchestrator_connection.log_trace("Process completed successfully.")
     print("Process completed successfully.")
@@ -301,7 +358,8 @@ def format_excel_file(excel_stream: BytesIO) -> BytesIO:
 
 def get_forms_data(conn_string: str, form_type: str) -> list[dict]:
     """
-    Retrieve form_data['data'] for all matching submissions for the given form type.
+    Retrieve form_data['data'] for all matching submissions for the given form type,
+    excluding purged entries.
     """
 
     print("inside get_forms_data")
@@ -315,6 +373,8 @@ def get_forms_data(conn_string: str, form_type: str) -> list[dict]:
             [RPA].[journalizing].[Forms]
         WHERE
             form_type = ?
+            AND form_data IS NOT NULL
+            AND form_submitted_date IS NOT NULL
         ORDER BY form_submitted_date DESC
     """
 
@@ -323,10 +383,7 @@ def get_forms_data(conn_string: str, form_type: str) -> list[dict]:
     engine = create_engine(f"mssql+pyodbc:///?odbc_connect={encoded_conn_str}")
 
     try:
-        # Run query with the form_type parameter as a list
         df = pd.read_sql(sql=query, con=engine, params=(form_type,))
-
-        print("after pd.read_sql")
 
     except Exception as e:
         print("Error during pd.read_sql:", e)
@@ -334,15 +391,19 @@ def get_forms_data(conn_string: str, form_type: str) -> list[dict]:
         raise
 
     if df.empty:
-        print("No submissions found for the given form type and date range.")
+        print("No submissions found for the given form type.")
 
         return []
 
-    # Extract the full parsed JSON for each row
-    extracted_data = [
-        json.loads(row["form_data"])
-        for _, row in df.iterrows()
-    ]
+    extracted_data = []
+    for _, row in df.iterrows():
+        try:
+            parsed = json.loads(row["form_data"])
+            if "purged" not in parsed:  # Skip purged entries
+                extracted_data.append(parsed)
+
+        except json.JSONDecodeError:
+            print("Invalid JSON in form_data, skipping row.")
 
     return extracted_data
 

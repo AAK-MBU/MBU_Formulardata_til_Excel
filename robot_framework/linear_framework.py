@@ -24,11 +24,11 @@ def main():
 
     # sys.argv = [
     #     "linear_framework.py",
-    #     "DADJ - OS2 Formulardata til Sharepoint - Basisteam - spørgeskema til fagpersoner",
+    #     "DADJ - OS2 Formulardata til Sharepoint - tilmelding til modersmålsundervisning",
     #     os.getenv("ORCHESTRATOR_CONNECTION_STRING"),
     #     os.getenv("ORCHESTRATOR_ENCRYPTION_KEY"),
     #     json.dumps({
-    #         "os2_webform_id": "basisteam_spoergeskema_til_fagpe",
+    #         "os2_webform_id": "tilmelding_til_modersmaalsunderv",
     #     })
     # ]
 
