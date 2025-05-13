@@ -35,7 +35,7 @@ def upload_pdf_to_sharepoint(
 
         path = urlparse(file_url).path
         filename = path.split('/')[-1]
-        final_filename = f"{unquote(filename)}_besvarelse.pdf"
+        final_filename = f"{unquote(filename)}"
 
         print(file_url)
         print(final_filename)
