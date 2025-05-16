@@ -248,7 +248,7 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
             new_forms_df = pd.DataFrame(new_forms)
 
             # Sort by "Serial number" in descending order
-            new_forms_df.sort_values(by="Serial number", ascending=False, inplace=True)
+            new_forms_df.sort_values(by="Ønsket sprog", ascending=False, inplace=True)
 
             # Save the updated DataFrame to an in-memory Excel file
             updated_excel_stream = BytesIO()
