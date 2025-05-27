@@ -122,8 +122,8 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
         formular_mapping = formular_mappings.sundung_aarhus_mapping
 
     elif os2_webform_id == "tilmelding_til_modersmaalsunderv":
-        # today = datetime.date.today()
-        today = datetime.date(2025, 5, 5)
+        today = datetime.date.today()
+        # today = datetime.date(2025, 5, 26)
 
         monday_last_week = today - datetime.timedelta(days=today.weekday() + 7)
         sunday_last_week = monday_last_week + datetime.timedelta(days=6)
@@ -248,7 +248,7 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
             new_forms_df = pd.DataFrame(new_forms)
 
             # Sort by "Serial number" in descending order
-            new_forms_df.sort_values(by="Ønsket sprog", ascending=False, inplace=True)
+            new_forms_df.sort_values(by="Ønsket sprog", ascending=True, inplace=True)
 
             # Save the updated DataFrame to an in-memory Excel file
             updated_excel_stream = BytesIO()
