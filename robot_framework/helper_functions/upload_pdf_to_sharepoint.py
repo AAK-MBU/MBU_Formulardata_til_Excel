@@ -29,8 +29,6 @@ def upload_pdf_to_sharepoint(
         existing_pdf_names = set()
 
     for form in active_forms:
-        form_id = form["entity"]["sid"][0]["value"]
-
         file_url = form["data"]["attachments"]["besvarelse_i_pdf_format"]["url"]
 
         path = urlparse(file_url).path
