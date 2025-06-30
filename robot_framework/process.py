@@ -68,22 +68,22 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
     os2_api_key = orchestrator_connection.get_credential('os2_api').password
 
     if os2_webform_id == "basisteam_spoergeskema_til_fagpe":
-        site_name = "tea-teamsite11462"
-        folder_name = "General/Udtræk OS2Forms"
+        site_name = "tea-teamsite8906"
+        folder_name = "General/Evaluering/Udtræk OS2Forms"
         excel_file_name = "Dataudtræk basisteam - fagperson.xlsx"
         formular_mapping = formular_mappings.basisteam_spoergeskema_til_fagpe_mapping
 
         upload_pdfs_to_sharepoint = True
-        upload_pdfs_to_sharepoint_folder_name = "General/Besvarelser fra OS2Forms - fagpersoner"
+        upload_pdfs_to_sharepoint_folder_name = "General/Evaluering/Besvarelser fra OS2Forms - fagpersoner"
 
     elif os2_webform_id == "basisteam_spoergeskema_til_forae":
-        site_name = "tea-teamsite11462"
-        folder_name = "General/Udtræk OS2Forms"
+        site_name = "tea-teamsite8906"
+        folder_name = "General/Evaluering/Udtræk OS2Forms"
         excel_file_name = "Dataudtræk basisteam - forældre.xlsx"
         formular_mapping = formular_mappings.basisteam_spoergeskema_til_forae_mapping
 
         upload_pdfs_to_sharepoint = True
-        upload_pdfs_to_sharepoint_folder_name = "General/Besvarelser fra OS2Forms - forældre"
+        upload_pdfs_to_sharepoint_folder_name = "General/Evaluering/Besvarelser fra OS2Forms - forældre"
 
     elif os2_webform_id == "henvisningsskema_til_klinisk_hyp":
         site_name = "tea-teamsite10693"
