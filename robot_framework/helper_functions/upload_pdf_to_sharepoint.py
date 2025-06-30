@@ -61,8 +61,6 @@ def upload_pdf_to_sharepoint(
             folder_name=folder_name
         )
 
-    return None
-
 
 def download_file_bytes(url: str, os2_api_key: str) -> bytes:
     """Downloads the content of a file from a specified URL, appending an API key to the URL for authorization.
