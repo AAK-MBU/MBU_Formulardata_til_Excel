@@ -11,3 +11,4 @@ disable =
   W0719, # too general exception
   R0915, # Too many statements
   R1702, # Too many nested blocks
+  R0912, # Too many branches
