@@ -20,6 +20,8 @@ def upload_pdf_to_sharepoint(
     orchestrator_connection.log_trace("Upload PDF to Sharepoint started.")
     print("Upload PDF to Sharepoint started.")
 
+    existing_pdfs_sum = 0
+
     existing_pdfs = sharepoint_api.fetch_files_list(folder_name=folder_name)
 
     if existing_pdfs:
@@ -41,6 +43,8 @@ def upload_pdf_to_sharepoint(
         if final_filename in existing_pdf_names:
             print(f"File {final_filename} already exists in Sharepoint. Skipping download.")
 
+            existing_pdfs_sum += 1
+
             continue
 
         orchestrator_connection.log_trace("Downloading PDF from OS2Forms API.")
@@ -58,6 +62,10 @@ def upload_pdf_to_sharepoint(
             file_name=final_filename,
             folder_name=folder_name
         )
+
+    if existing_pdfs_sum == len(active_forms):
+        orchestrator_connection.log_trace("All files already exist in Sharepoint. No new files uploaded.")
+        print("All files already exist in Sharepoint. No new files uploaded.")
 
 
 def download_file_bytes(url: str, os2_api_key: str) -> bytes:
