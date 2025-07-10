@@ -17,6 +17,8 @@ def upload_pdf_to_sharepoint(
 ) -> None:
     """Main function to upload a PDF to Sharepoint."""
 
+    uploaded_pdf = False
+
     orchestrator_connection.log_trace("Upload PDF to Sharepoint started.")
     print("Upload PDF to Sharepoint started.")
 
@@ -63,7 +65,11 @@ def upload_pdf_to_sharepoint(
             folder_name=folder_name
         )
 
-    if existing_pdfs_sum == len(active_forms):
+        orchestrator_connection.log_trace(f"File {final_filename} uploaded to Sharepoint.")
+
+        uploaded_pdf = True
+
+    if not uploaded_pdf:
         orchestrator_connection.log_trace("All files already exist in Sharepoint. No new files uploaded.")
         print("All files already exist in Sharepoint. No new files uploaded.")
 
