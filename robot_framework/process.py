@@ -144,72 +144,72 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
 
     # Modersmaalsundervisning has a different flow - therefore we skip the Excel overwrite functionality if we are currently running that formular
     if os2_webform_id != "tilmelding_til_modersmaalsunderv":
-        if str(current_day_of_month) == "1":
-            orchestrator_connection.log_trace("Current day is the first of the month - updating Excel file with new submissions.")
-            print("Current day is the first of the month - updating Excel file with new submissions.")
+        orchestrator_connection.log_trace("Current day is the first of the month - updating Excel file with new submissions.")
+        print("Current day is the first of the month - updating Excel file with new submissions.")
 
-            # STEP 2 - Get the Excel file from Sharepoint
-            orchestrator_connection.log_trace("STEP 2 - Retrieving existing Excel sheet.")
-            print("STEP 2 - Retrieving existing Excel sheet.")
-            excel_file = sharepoint_api.fetch_file_using_open_binary(excel_file_name, folder_name)
-            excel_stream = BytesIO(excel_file)
-            excel_file_df = pd.read_excel(excel_stream)
-            orchestrator_connection.log_trace(f"Excel file retrieved. {len(excel_file_df)} rows found in existing sheet.")
-            print(f"Excel file retrieved. {len(excel_file_df)} rows found in existing sheet.")
+        # STEP 2 - Get the Excel file from Sharepoint
+        orchestrator_connection.log_trace("STEP 2 - Retrieving existing Excel sheet.")
+        print("STEP 2 - Retrieving existing Excel sheet.")
+        excel_file = sharepoint_api.fetch_file_using_open_binary(excel_file_name, folder_name)
+        excel_stream = BytesIO(excel_file)
+        excel_file_df = pd.read_excel(excel_stream)
+        orchestrator_connection.log_trace(f"Excel file retrieved. {len(excel_file_df)} rows found in existing sheet.")
+        print(f"Excel file retrieved. {len(excel_file_df)} rows found in existing sheet.")
 
-            # Create a set of serial numbers from the Excel file
-            serial_set = set(excel_file_df["Serial number"].tolist())
+        # Create a set of serial numbers from the Excel file
+        serial_set = set(excel_file_df["Serial number"].tolist())
 
-            # STEP 3 - Loop through all active forms and transform them to the correct format
-            orchestrator_connection.log_trace("STEP 3 - Looping forms and mapping retrieved data to fit Excel column names.")
-            print("STEP 3 - Looping forms and mapping retrieved data to fit Excel column names.")
-            for form in all_active_forms:
-                form_serial_number = form["entity"]["serial"][0]["value"]
+        # STEP 3 - Loop through all active forms and transform them to the correct format
+        orchestrator_connection.log_trace("STEP 3 - Looping forms and mapping retrieved data to fit Excel column names.")
+        print("STEP 3 - Looping forms and mapping retrieved data to fit Excel column names.")
+        for form in all_active_forms:
+            form_serial_number = form["entity"]["serial"][0]["value"]
 
-                if form_serial_number in serial_set:
-                    continue
+            if form_serial_number in serial_set:
+                print("heyooo")
+                continue
 
-                transformed_row = formular_mappings.transform_form_submission(form_serial_number, form, formular_mapping)
+            transformed_row = formular_mappings.transform_form_submission(form_serial_number, form, formular_mapping)
 
-                new_forms.append(transformed_row)
+            new_forms.append(transformed_row)
 
-            # STEP 4 & 5 - If new forms are found, append them to the Excel file, format the file and upload it to Sharepoint
-            if new_forms:
-                orchestrator_connection.log_trace(f"New forms found. {len(new_forms)} new forms to be added.")
-                print(f"New forms found. {len(new_forms)} new forms to be added.")
+        # STEP 4 & 5 - If new forms are found, append them to the Excel file, format the file and upload it to Sharepoint
+        if new_forms:
+            orchestrator_connection.log_trace(f"New forms found. {len(new_forms)} new forms to be added.")
+            print(f"New forms found. {len(new_forms)} new forms to be added.")
 
-                new_forms_df = pd.DataFrame(new_forms)
+            new_forms_df = pd.DataFrame(new_forms)
 
-                # Append the new forms to the existing DataFrame
-                updated_excel_df = pd.concat([excel_file_df, new_forms_df], ignore_index=True)
+            # Append the new forms to the existing DataFrame
+            updated_excel_df = pd.concat([excel_file_df, new_forms_df], ignore_index=True)
 
-                # Sort by "Serial number" in descending order
-                updated_excel_df.sort_values(by="Serial number", ascending=False, inplace=True)
+            # Sort by "Serial number" in descending order
+            updated_excel_df.sort_values(by="Serial number", ascending=False, inplace=True)
 
-                # Save the updated DataFrame to an in-memory Excel file
-                updated_excel_stream = BytesIO()
-                updated_excel_df.to_excel(updated_excel_stream, index=False, engine="openpyxl")
-                updated_excel_stream.seek(0)
+            # Save the updated DataFrame to an in-memory Excel file
+            updated_excel_stream = BytesIO()
+            updated_excel_df.to_excel(updated_excel_stream, index=False, engine="openpyxl")
+            updated_excel_stream.seek(0)
 
-                # Apply formatting and get the formatted stream
-                orchestrator_connection.log_trace("STEP 4 - Formatting Excel file.")
-                print("STEP 4 - Formatting Excel file.")
-                formatted_stream = format_excel_file(updated_excel_stream)
+            # Apply formatting and get the formatted stream
+            orchestrator_connection.log_trace("STEP 4 - Formatting Excel file.")
+            print("STEP 4 - Formatting Excel file.")
+            formatted_stream = format_excel_file(updated_excel_stream)
 
-                # Upload the formatted Excel file to SharePoint
-                orchestrator_connection.log_trace("STEP 5 - Uploading formatted Excel file to Sharepoint.")
-                print("STEP 5 - Uploading formatted Excel file to Sharepoint.")
-                sharepoint_api.upload_file_from_bytes(
-                    binary_content=formatted_stream.getvalue(),
-                    file_name=excel_file_name,
-                    folder_name=folder_name
-                )
+            # Upload the formatted Excel file to SharePoint
+            orchestrator_connection.log_trace("STEP 5 - Uploading formatted Excel file to Sharepoint.")
+            print("STEP 5 - Uploading formatted Excel file to Sharepoint.")
+            sharepoint_api.upload_file_from_bytes(
+                binary_content=formatted_stream.getvalue(),
+                file_name=excel_file_name,
+                folder_name=folder_name
+            )
 
-            else:
-                print("No new forms found.")
+        else:
+            print("No new forms found.")
 
-                orchestrator_connection.log_trace("No new forms found.")
-                print("No new forms found.")
+            orchestrator_connection.log_trace("No new forms found.")
+            print("No new forms found.")
 
         if upload_pdfs_to_sharepoint:
             # Upload the PDFs to SharePoint
