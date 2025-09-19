@@ -28,7 +28,7 @@ dependencies = [
     "requests_ntlm >= 1.2.0",
     "pandas >= 2.2.3",
     "itk-dev-shared-components == 2.9.0",
-    "mbu-dev-shared-components>=0.4.2",
+    "mbu-dev-shared-components>=0.4.2,<4.0.0",
 ]
 
 [project.optional-dependencies]
